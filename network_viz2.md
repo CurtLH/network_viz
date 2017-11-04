@@ -20,13 +20,11 @@ categories: blog
 
 </style>
 
-[D3](https://d3js.org/) is a [Javascript](https://www.javascript.com/) library for producing really cool visualizations such as [this one](http://www.r2d3.us/visual-intro-to-machine-learning-part-1/) and [these](https://github.com/mbostock/d3/wiki/Gallery). According to [Wikipedia](https://en.wikipedia.org/wiki/D3.js), D3 offers greater control over the appearance of the final result than other similar libraries. This (probably) means that it requires a bit more Javascript experience than other libraries, but I have to admit I'm totally new to Javascript.
-
-For this post, I wanted to make a simple D3 visualization to test whether or not there would be any hiccups to overcome in order to host my own D3 work with a Jekyll Blog and GitHub Pages. Javascript is high on my list of things to learn and I think picking up D3 along the way would be fun way to do that. I do not, however, want the presence of D3 on this site to indicate to anyone that I know what I'm doing. I do not.
+This is my own personal network. 
 
 <div id='d3div'></div>
 
-You can click-and-drag the nodes around, although I'm not sure why you'd want to except that it is unreasonably fun. I think I read somewhere the edges of this graph are meant to behave like springs, but [Mike Bostock](https://en.wikipedia.org/wiki/Mike_Bostock) provides more information in the link given below. 
+This is a Force-Directed layout, and you can click-and-drag the nodes around.
 
 ## The Code
 
