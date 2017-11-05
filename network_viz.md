@@ -20,13 +20,11 @@ categories: blog
 
 </style>
 
-[D3](https://d3js.org/) is a [Javascript](https://www.javascript.com/) library for producing really cool visualizations such as [this one](http://www.r2d3.us/visual-intro-to-machine-learning-part-1/) and [these](https://github.com/mbostock/d3/wiki/Gallery). According to [Wikipedia](https://en.wikipedia.org/wiki/D3.js), D3 offers greater control over the appearance of the final result than other similar libraries. This (probably) means that it requires a bit more Javascript experience than other libraries, but I have to admit I'm totally new to Javascript.
-
-For this post, I wanted to make a simple D3 visualization to test whether or not there would be any hiccups to overcome in order to host my own D3 work with a Jekyll Blog and GitHub Pages. Javascript is high on my list of things to learn and I think picking up D3 along the way would be fun way to do that. I do not, however, want the presence of D3 on this site to indicate to anyone that I know what I'm doing. I do not.
+This is my personal network. 
 
 <div id='d3div'></div>
 
-You can click-and-drag the nodes around, although I'm not sure why you'd want to except that it is unreasonably fun. I think I read somewhere the edges of this graph are meant to behave like springs, but [Mike Bostock](https://en.wikipedia.org/wiki/Mike_Bostock) provides more information in the link given below. 
+You can click-and-drag the nodes around.
 
 ## The Code
 
@@ -56,8 +54,6 @@ Then I create a `div` tag to place the D3-created SVG. You can assign it any id 
 
 Finally the actual Javascript to create the SVG. I wanted the SVG to resize based on the width of the parent container. This way it should work properly when viewed on mobile or on a skinny web broswer window. To do this I changed the width variable to grab the width of the d3div tag. When you resize the window you'll have to refresh your browser to get the SVG to change. There almost certainly exists a more clever approach, but I didn't take the time to work it out.
 
-{% highlight html %}
-
 <script src="//d3js.org/d3.v3.min.js"></script>
 <script>
 
@@ -75,63 +71,7 @@ var svg = d3.select("#d3div").append("svg")
     .attr("width", width)
     .attr("height", height);
 
-d3.json("../../../../curtis.json", function(error, graph) {
-  if (error) throw error;
-
-  force
-      .nodes(graph.nodes)
-      .links(graph.links)
-      .start();
-
-  var link = svg.selectAll(".link")
-      .data(graph.links)
-    .enter().append("line")
-      .attr("class", "link")
-      .style("stroke-width", function(d) { return Math.sqrt(d.value); });
-
-  var node = svg.selectAll(".node")
-      .data(graph.nodes)
-    .enter().append("circle")
-      .attr("class", "node")
-      .attr("r", 5)
-      .style("fill", function(d) { return color(d.group); })
-      .call(force.drag);
-
-  node.append("title")
-      .text(function(d) { return d.name; });
-
-  force.on("tick", function() {
-    link.attr("x1", function(d) { return d.source.x; })
-        .attr("y1", function(d) { return d.source.y; })
-        .attr("x2", function(d) { return d.target.x; })
-        .attr("y2", function(d) { return d.target.y; });
-
-    node.attr("cx", function(d) { return d.x; })
-        .attr("cy", function(d) { return d.y; });
-  });
-});
-
-</script>
-{% endhighlight %}
-
-<script src="//d3js.org/d3.v3.min.js"></script>
-<script>
-
-var width = $("#d3div").width(),
-    height = 500;
-
-var color = d3.scale.category20();
-
-var force = d3.layout.force()
-    .charge(-120)
-    .linkDistance(30)
-    .size([width, height]);
-
-var svg = d3.select("#d3div").append("svg")
-    .attr("width", width)
-    .attr("height", height);
-
-d3.json("../../../../scripts/miserables.json", function(error, graph) {
+d3.json("./curtis.json", function(error, graph) {
   if (error) throw error;
 
   force
