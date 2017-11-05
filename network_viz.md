@@ -1,12 +1,10 @@
----
-layout: post
-title: "Network Visualization"
-author: "Curtis Hampton"
-date: "November 4th, 2017"
-categories: blog
----
+# Ego Network Visualization
 
-This is my network. 3
+## This is my personal network
+
+### You can `click` and `drag` things around.
+
+You can also just admire my beautiful graph :)
 
 <style>
 
