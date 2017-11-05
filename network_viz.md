@@ -19,7 +19,7 @@ You can also just admire my beautiful graph :)
 }
 
 </style>
-<svg width="600" height="600"></svg>
+<svg width="400" height="400"></svg>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
 
