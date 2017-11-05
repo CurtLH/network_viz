@@ -1,6 +1,6 @@
 # Ego Network Visualization
 
-This is my personal network. You can click and drag things around. 
+This is my personal network. You can click and drag nodes around. You can also hover over nodes to reveal their name. 
 
 <style>
 
