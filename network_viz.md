@@ -8,8 +8,6 @@ categories: blog
 
 This is my network. 3
 
-<!DOCTYPE html>
-<meta charset="utf-8">
 <style>
 
 .links line {
