@@ -1,10 +1,6 @@
 # Ego Network Visualization
 
-## This is my personal network
-
-### You can `click` and `drag` things around.
-
-You can also just admire my beautiful graph :)
+This is my personal network. You can click and drag things around. You can also just admire my beautiful graph! :)
 
 <style>
 
