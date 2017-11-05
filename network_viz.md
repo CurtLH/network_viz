@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "D3 with GitHub Pages"
-author: "Andrew Mehrmann"
-date: "May 1, 2016"
+title: "Network Visualization"
+author: "Curtis Hampton"
+date: "November 4th, 2017"
 categories: blog
 ---
 <script src="//code.jquery.com/jquery.js"></script>
@@ -75,7 +75,7 @@ var svg = d3.select("#d3div").append("svg")
     .attr("width", width)
     .attr("height", height);
 
-d3.json("../../../../scripts/curtis.json", function(error, graph) {
+d3.json("../../../../curtis.json", function(error, graph) {
   if (error) throw error;
 
   force
@@ -131,7 +131,7 @@ var svg = d3.select("#d3div").append("svg")
     .attr("width", width)
     .attr("height", height);
 
-d3.json("../../../../scripts/curtis.json", function(error, graph) {
+d3.json("../../../../scripts/miserables.json", function(error, graph) {
   if (error) throw error;
 
   force
