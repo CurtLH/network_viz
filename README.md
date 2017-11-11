@@ -1,3 +1,3 @@
 # network_viz
 
-d3.js
+- [Ego Network Visualizations](https://curtlh.github.io/network_viz/network_viz.html)
