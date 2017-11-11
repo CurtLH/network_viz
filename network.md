@@ -1,3 +1,5 @@
+# Attempt 1
+
 [D3](https://d3js.org/) is a [Javascript](https://www.javascript.com/) library for producing really cool visualizations such as [this one](http://www.r2d3.us/visual-intro-to-machine-learning-part-1/) and [these](https://github.com/mbostock/d3/wiki/Gallery). 
 
 <div id='d3div'></div>
@@ -35,7 +37,7 @@ var simulation = d3.forceSimulation()
     .force("center", d3.forceCenter(width / 2, height / 2));
 
 
-d3.json("curtis.json", function(error, graph) {
+d3.json("./ego_networks/curtis.json", function(error, graph) {
   if (error) throw error;
 
   var link = svg.append("g")
