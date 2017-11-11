@@ -1,4 +1,4 @@
-# Attempt 3
+# Attempt 5
 
 [D3](https://d3js.org/) is a [Javascript](https://www.javascript.com/) library for producing really cool visualizations such as [this one](http://www.r2d3.us/visual-intro-to-machine-learning-part-1/) and [these](https://github.com/mbostock/d3/wiki/Gallery). 
 
@@ -23,24 +23,23 @@ You can click-and-drag the nodes around, although I'm not sure why you'd want to
 }
 
 </style>
-
+<svg width="400" height="400"></svg>
 <script src="https://d3js.org/d3.v4.min.js"></script>
-
 <script>
 
-var width = $("#d3div").width(),
-    height = 500;
-    
+
+
+var svg = d3.select("#d3div").append("svg"),
+    width = +svg.attr("width"),
+    height = +svg.attr("height");
+
 var color = d3.scaleOrdinal(d3.schemeCategory20);
-    
-var svg = d3.select("#d3div").append("svg")
-    .attr("width", width)
-    .attr("height", height);
 
 var simulation = d3.forceSimulation()
     .force("link", d3.forceLink().id(function(d) { return d.id; }))
     .force("charge", d3.forceManyBody().strength(-600))
     .force("center", d3.forceCenter(width / 2, height / 2));
+
 
 d3.json("./ego_networks/curtis.json", function(error, graph) {
   if (error) throw error;
