@@ -1,15 +1,11 @@
-# Ego Network Visualization
+# Curtis Hampton
 
-*You can click and drag nodes around. You can also hover over nodes to reveal the name associated with each node.*
+Here is my tag:
 
-## Curtis Hampton
-above tag
-<div id="curtis></div>
-below tag
+<div id="chart1"></div>
 
-code below here:
-<!DOCTYPE html>
-<meta charset="utf-8">
+This is the code for this tag.
+
 <style>
 
 .links line {
@@ -23,16 +19,16 @@ code below here:
 }
 
 </style>
-<svg width="400" height="400"></svg>
+<chart1 width="400" height="400"></chart1>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
 
 
 
-var svg = d3.select("#curtis")
-    .append("svg")
-    width = +svg.attr("width"),
-    height = +svg.attr("height");
+var chart1 = d3.select("chart1")
+    .append("svg"),
+    width = +chart1.attr("width"),
+    height = +chart1.attr("height");
 
 var color = d3.scaleOrdinal(d3.schemeCategory20);
 
@@ -45,14 +41,14 @@ var simulation = d3.forceSimulation()
 d3.json("curtis.json", function(error, graph) {
   if (error) throw error;
 
-  var link = svg.append("g")
+  var link = chart1.append("g")
       .attr("class", "links")
     .selectAll("line")
     .data(graph.links)
     .enter().append("line")
       .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
 
-  var node = svg.append("g")
+  var node = chart1.append("g")
       .attr("class", "nodes")
     .selectAll("circle")
     .data(graph.nodes)
