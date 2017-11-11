@@ -1,0 +1,38 @@
+{
+  "nodes": [
+    {"id": "", "group": 1}, 
+    {"id": "", "group": 2},
+    {"id": "", "group": 2},
+    {"id": "", "group": 2},
+    {"id": "", "group": 2},
+    {"id": "", "group": 3},
+    {"id": "", "group":3},
+    {"id": "", "group": 3},
+    {"id": "", "group": 4},
+    {"id": "", "group": 5},
+    {"id": "", "group": 5},
+    {"id": "", "group": 6},
+    {"id": "", "group": 6}
+  ],
+  "links": [
+    {"source": "", "target": "", "value": 1},
+    {"source": "", "target": "", "value": 1},
+    {"source": "", "target": "", "value": 1},
+    {"source": "", "target": "", "value": 1},
+    {"source": "", "target": "", "value": 1},
+    {"source": "", "target": "", "value": 1},
+    {"source": "", "target": "", "value": 1},
+    {"source": "", "target": "", "value": 1},
+    {"source": "", "target": "", "value": 1},
+    {"source": "", "target": "", "value": 1},
+    {"source": "", "target": "", "value": 1},
+    {"source": "", "target": "", "value": 1},
+    {"source": "", "target": "", "value": 1},
+    {"source": "", "target": "", "value": 1},
+    {"source": "", "target": "", "value": 1},
+    {"source": "", "target": "", "value": 1},
+    {"source": "", "target": "", "value": 1},
+    {"source": "", "target": "", "value": 1},
+    {"source": "", "target": "", "value": 1}
+  ]
+}
