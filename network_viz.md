@@ -140,4 +140,3 @@ function dragended(d) {
 
 </script>
 
-## Chris Kirkos
