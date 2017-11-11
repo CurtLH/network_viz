@@ -1,4 +1,4 @@
-# Attempt 5
+# Attempt 6
 
 [D3](https://d3js.org/) is a [Javascript](https://www.javascript.com/) library for producing really cool visualizations such as [this one](http://www.r2d3.us/visual-intro-to-machine-learning-part-1/) and [these](https://github.com/mbostock/d3/wiki/Gallery). 
 
@@ -23,7 +23,7 @@ You can click-and-drag the nodes around, although I'm not sure why you'd want to
 }
 
 </style>
-<svg width="400" height="400"></svg>
+<svg width="600" height="600"></svg>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
 
