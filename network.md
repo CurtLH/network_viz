@@ -1,81 +1,100 @@
-## new 1
-<script src="https://d3js.org/d3.v4.min.js"></script>
-
-<style>
-.links line {
-  stroke: #999;
-  stroke-opacity: 0.6;
-}
-.nodes circle {
-  stroke: #fff;
-  stroke-width: 1.5px;
-}
-</style>
-
 [D3](https://d3js.org/) is a [Javascript](https://www.javascript.com/) library for producing really cool visualizations such as [this one](http://www.r2d3.us/visual-intro-to-machine-learning-part-1/) and [these](https://github.com/mbostock/d3/wiki/Gallery). 
 
 <div id='d3div'></div>
 
 You can click-and-drag the nodes around, although I'm not sure why you'd want to except that it is unreasonably fun.
 
+<style>
 
-<script src="//d3js.org/d3.v3.min.js"></script>
+.links line {
+  stroke: #999;
+  stroke-opacity: 0.6;
+}
+
+.nodes circle {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+</style>
+<svg width="400" height="400"></svg>
+<script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
+
+
 
 var svg = d3.select("svg"),
     width = +svg.attr("width"),
     height = +svg.attr("height");
 
-var width = $("#d3div").width(),
-    height = 500;
+var color = d3.scaleOrdinal(d3.schemeCategory20);
 
-var color = d3.scale.category20();
+var simulation = d3.forceSimulation()
+    .force("link", d3.forceLink().id(function(d) { return d.id; }))
+    .force("charge", d3.forceManyBody().strength(-600))
+    .force("center", d3.forceCenter(width / 2, height / 2));
 
-var force = d3.layout.force()
-    .charge(-120)
-    .linkDistance(30)
-    .size([width, height]);
 
-var svg = d3.select("#d3div").append("svg")
-    .attr("width", width)
-    .attr("height", height);
-
-d3.json("./ego_networks/curtis.json", function(error, graph) {
+d3.json("curtis.json", function(error, graph) {
   if (error) throw error;
 
-  force
-      .nodes(graph.nodes)
-      .links(graph.links)
-      .start();
-
-  var link = svg.selectAll(".link")
-      .data(graph.links)
+  var link = svg.append("g")
+      .attr("class", "links")
+    .selectAll("line")
+    .data(graph.links)
     .enter().append("line")
-      .attr("class", "link")
-      .style("stroke-width", function(d) { return Math.sqrt(d.value); });
+      .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
 
-  var node = svg.selectAll(".node")
-      .data(graph.nodes)
+  var node = svg.append("g")
+      .attr("class", "nodes")
+    .selectAll("circle")
+    .data(graph.nodes)
     .enter().append("circle")
-      .attr("class", "node")
-      .attr("r", 5)
-      .style("fill", function(d) { return color(d.group); })
-      .call(force.drag);
+      .attr("r", 1)
+      .attr("fill", function(d) { return color(d.group); })
+      .call(d3.drag()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended));
 
   node.append("title")
-      .text(function(d) { return d.name; });
+      .text(function(d) { return d.id; });
 
-  force.on("tick", function() {
-    link.attr("x1", function(d) { return d.source.x; })
+  simulation
+      .nodes(graph.nodes)
+      .on("tick", ticked);
+
+  simulation.force("link")
+      .links(graph.links);
+
+  function ticked() {
+    link
+        .attr("x1", function(d) { return d.source.x; })
         .attr("y1", function(d) { return d.source.y; })
         .attr("x2", function(d) { return d.target.x; })
         .attr("y2", function(d) { return d.target.y; });
 
-    node.attr("cx", function(d) { return d.x; })
+    node
+        .attr("cx", function(d) { return d.x; })
         .attr("cy", function(d) { return d.y; });
-  });
+  }
 });
 
-</script>
+function dragstarted(d) {
+  if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+  d.fx = d.x;
+  d.fy = d.y;
+}
 
-# End
+function dragged(d) {
+  d.fx = d3.event.x;
+  d.fy = d3.event.y;
+}
+
+function dragended(d) {
+  if (!d3.event.active) simulation.alphaTarget(0);
+  d.fx = null;
+  d.fy = null;
+}
+
+</script>
