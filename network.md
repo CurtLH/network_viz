@@ -1,4 +1,4 @@
-# Attempt 1
+# Attempt 2
 
 [D3](https://d3js.org/) is a [Javascript](https://www.javascript.com/) library for producing really cool visualizations such as [this one](http://www.r2d3.us/visual-intro-to-machine-learning-part-1/) and [these](https://github.com/mbostock/d3/wiki/Gallery). 
 
@@ -52,7 +52,7 @@ d3.json("./ego_networks/curtis.json", function(error, graph) {
     .selectAll("circle")
     .data(graph.nodes)
     .enter().append("circle")
-      .attr("r", 1)
+      .attr("r", 10)
       .attr("fill", function(d) { return color(d.group); })
       .call(d3.drag()
           .on("start", dragstarted)
