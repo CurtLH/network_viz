@@ -37,11 +37,11 @@ str(network)
 
 Welcome to the results of the Leader Network Diagnostic. The purpose of this document is to help you understand your core professional network.
 
-# Network Visualization
+## Network Visualization
 
 In this section, we are going to show you what your core professional network looks like.
 
-```{r echo=FALSE}
+```{r echo=FALSE, fig.align="center"}
 # create undirected graph
 g <- graph_from_data_frame(d=network, directed=F)
 
@@ -59,15 +59,19 @@ plot(g,
      )
 ```
 
-# Open
+## Open
 
 Openness measures the degree to which the people in your network know one another.
 
-# Diverse
+<center>
+![](./open.png)
+</center>
+
+## Diverse
 
 Diversity measures the degree to which the people in your network are similiar or not similiar to one another.
 
-```{r echo=FALSE, results='hide'}
+```{r echo=FALSE, results='hide', fig.align="center"}
 # subset helpful responses
 helpful <- connections[c("name", 
                          "work", 
@@ -92,7 +96,7 @@ ggplot(helpful.m, aes(variable, name)) +
   theme(legend.title=element_blank())
 ```
 
-# Deep
+## Deep
 
 Depth measures the strength of the relationship you have with the people in your network.
 
