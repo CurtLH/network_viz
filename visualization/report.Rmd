@@ -1,0 +1,75 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(reshape)
+library(plyr)
+library(scales)
+library(ggplot2)
+library(igraph)
+```
+
+```{r}
+# load example data
+respondent <- read.csv('../example_data/respondent.csv')
+connections <- read.csv('../example_data/connections.csv')
+network <- read.csv('../example_data/network.csv')
+```
+
+```{r}
+# convert data types where needed
+connections$name <- as.character(connections$name)
+connections$id <- as.character(connections$id)
+```
+
+
+```{r}
+# inspect data
+str(respondent)
+str(connections)
+str(network)
+```
+
+```{r}
+# subset helpful responses
+helpful <- connections[c("name", 
+                         "work", 
+                         "friend", 
+                         "support", 
+                         "career",
+                         "mentoring",
+                         "growth",
+                         "motivator"
+                         )]
+
+# inspect the result
+helpful
+```
+
+```{r}
+#reshape the helpful data
+helpful.m <- melt(helpful, id="name")
+
+# inspect the result
+head(helpful.m)
+```
+
+```{r}
+# rescale variables
+helpful.m <- ddply(helpful.m, .(variable), transform, rescale = rescale(value))
+
+# plot heatmap of name by helpful
+ggplot(helpful.m, aes(variable, name)) + 
+  geom_tile(aes(fill = rescale),colour = "white") + 
+  scale_fill_gradient(low = "white", high = "steelblue") +
+  theme(legend.title=element_blank())
+```
+
+```{r}
+# plot graph of connections
+g <- graph_from_data_frame(d=network, directed=F)
+plot(g)
+```
+
