@@ -1,0 +1,4 @@
+helpful_innovator,closeness,relationship_length,name,age,formal_rank,position,helpful_work,helpful_friend,helpful_support,helpful_career,work,helpful_mentoring,helpful_growth,race,helpful_motivator,leader_level,gender,id
+0.5,Very Close,5 years,Lauren,26 to 35,Same as yours,Works on the same team,0.5,1.0,1.0,0.2,At your same location,0.0,0.5,White,0.5,Professional,Female,connection_3
+1.0,Very Close,4 years,Patrick,36 to 45,Above yours,Works in a different team but same functional area,1.0,0.3,0.0,0.5,At your same location,0.0,1.0,White,0.8,First-Level,Male,connection_1
+0.5,Very Close,5 years,Juliana,36 to 45,Above yours,Works on the same team,0.7,0.5,0.2,0.9,At your same location,0.0,1.0,White,0.3,First-Level,Female,connection_2

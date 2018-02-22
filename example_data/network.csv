@@ -1,0 +1,6 @@
+from,to
+connection_1,connection_2
+connection_2,connection_3
+respondent,connection_3
+respondent,connection_2
+respondent,connection_1

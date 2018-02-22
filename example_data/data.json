@@ -437,7 +437,21 @@
         "connection_9 to connection_13": false,
         "connection_9 to connection_14": false,
         "connection_9 to connection_15": false,
-        "respondent to connection_1": false
+        "respondent to connection_1": true,
+        "respondent to connection_10": false,
+        "respondent to connection_11": false,
+        "respondent to connection_12": false,
+        "respondent to connection_13": false,
+        "respondent to connection_14": false,
+        "respondent to connection_15": false,
+        "respondent to connection_2": true,
+        "respondent to connection_3": true,
+        "respondent to connection_4": false,
+        "respondent to connection_5": false,
+        "respondent to connection_6": false,
+        "respondent to connection_7": false,
+        "respondent to connection_8": false,
+        "respondent to connection_9": false
     },
     "respondent": {
         "age": "26 to 35",
