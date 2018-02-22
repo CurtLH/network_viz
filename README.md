@@ -5,4 +5,4 @@
 
 ## Report
 - [Creating Example Data](https://github.com/CurtLH/network_viz/blob/master/example_data/create_data.ipynb)
-- [Creating Visualization](https://curtlh.github.io/network_viz/visualization/report.nb.html)
+- [Sample Report](https://curtlh.github.io/network_viz/visualization/report.nb.html)
