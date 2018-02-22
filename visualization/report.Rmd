@@ -1,9 +1,13 @@
 ---
-title: "R Notebook"
-output: html_notebook
+title: "Leader Network Diagnostic Report"
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
+  pdf_document: default
 ---
 
-```{r}
+```{r echo=FALSE, message=FALSE}
 library(reshape)
 library(plyr)
 library(scales)
@@ -11,28 +15,59 @@ library(ggplot2)
 library(igraph)
 ```
 
-```{r}
+```{r echo=FALSE}
 # load example data
 respondent <- read.csv('../example_data/respondent.csv')
 connections <- read.csv('../example_data/connections.csv')
 network <- read.csv('../example_data/network.csv')
 ```
 
-```{r}
+```{r echo=FALSE}
 # convert data types where needed
 connections$name <- as.character(connections$name)
 connections$id <- as.character(connections$id)
 ```
 
-
-```{r}
+```{r echo=FALSE, results='hide'}
 # inspect data
 str(respondent)
 str(connections)
 str(network)
 ```
 
-```{r}
+Welcome to the results of the Leader Network Diagnostic. The purpose of this document is to help you understand your core professional network.
+
+# Network Visualization
+
+In this section, we are going to show you what your core professional network looks like.
+
+```{r echo=FALSE}
+# create undirected graph
+g <- graph_from_data_frame(d=network, directed=F)
+
+# calculate layout
+l <- layout_with_fr(g)
+
+# plot graph
+plot(g, 
+     vertex.size=25,
+     vertex.color="gray",
+     vertex.label.color="black",
+     vertex.label.cex=0.5,
+     edge.curved=.1,
+     layout=l
+     )
+```
+
+# Open
+
+Openness measures the degree to which the people in your network know one another.
+
+# Diverse
+
+Diversity measures the degree to which the people in your network are similiar or not similiar to one another.
+
+```{r echo=FALSE, results='hide'}
 # subset helpful responses
 helpful <- connections[c("name", 
                          "work", 
@@ -44,19 +79,9 @@ helpful <- connections[c("name",
                          "motivator"
                          )]
 
-# inspect the result
-helpful
-```
-
-```{r}
 #reshape the helpful data
 helpful.m <- melt(helpful, id="name")
 
-# inspect the result
-head(helpful.m)
-```
-
-```{r}
 # rescale variables
 helpful.m <- ddply(helpful.m, .(variable), transform, rescale = rescale(value))
 
@@ -67,9 +92,9 @@ ggplot(helpful.m, aes(variable, name)) +
   theme(legend.title=element_blank())
 ```
 
-```{r}
-# plot graph of connections
-g <- graph_from_data_frame(d=network, directed=F)
-plot(g)
-```
+# Deep
+
+Depth measures the strength of the relationship you have with the people in your network.
+
+
 
