@@ -8,31 +8,70 @@ output:
 ---
 
 ```{r echo=FALSE, message=FALSE}
+library(gdata)
+library(igraph)
 library(reshape)
 library(plyr)
 library(scales)
 library(ggplot2)
-library(igraph)
 ```
 
-```{r echo=FALSE}
-# load example data
-respondent <- read.csv('../example_data/respondent.csv')
-connections <- read.csv('../example_data/connections.csv')
-network <- read.csv('../example_data/network.csv')
+
+```{r echo = FALSE, message = FALSE}
+# read in data from Excel
+respondent <- read.xls("LND_data_2.xlsx", sheet = 1, header = TRUE)
+connections <- read.xls("LND_data_2.xlsx", sheet = 2, header = TRUE)
+network <- read.xls("LND_data_2.xlsx", sheet = 3, header = TRUE, na.strings=c("NA",""))
 ```
 
-```{r echo=FALSE}
-# convert data types where needed
-connections$name <- as.character(connections$name)
-connections$id <- as.character(connections$id)
-```
-
-```{r echo=FALSE, results='hide'}
+```{r echo = FALSE, results = FALSE}
 # inspect data
 str(respondent)
 str(connections)
 str(network)
+
+# view data
+head(respondent)
+head(connections)
+head(network)
+```
+
+```{r echo = FALSE}
+# change data types where needed
+respondent$name <- as.character(respondent$name)
+```
+
+
+```{r echo = FALSE}
+# change data types where needed
+connections$name <- as.character(connections$name)
+
+# filter connections to complete rows only
+connections <- connections[complete.cases(connections),]
+```
+
+
+```{r echo = FALSE}
+# convert network to char
+network[] <- lapply(network, as.character)
+
+# subset network to only rows/connections
+network <-network[c(1:12), c(1:13)]
+
+# set first column as rownames
+rownames(network) <- network$X7
+
+# drop name column
+network$X7 <- NULL
+
+# replace "X" with 1
+network[network == "X"] <- 1
+
+# set NA to 0
+network[is.na(network)] <- 0
+
+# transform network into matrix
+m <- as.matrix(network)
 ```
 
 Welcome to the results of the Leader Network Diagnostic. The purpose of this document is to help you understand your core professional network.
@@ -42,8 +81,11 @@ Welcome to the results of the Leader Network Diagnostic. The purpose of this doc
 In this section, we are going to show you what your core professional network looks like.
 
 ```{r echo=FALSE, fig.align="center"}
-# create undirected graph
-g <- graph_from_data_frame(d=network, directed=F)
+# load network into graph
+g <- graph_from_adjacency_matrix(m)
+
+# convert the graph to undirected
+g <- as.undirected(g)
 
 # calculate layout
 l <- layout_with_fr(g)
@@ -92,7 +134,7 @@ helpful.m <- ddply(helpful.m, .(variable), transform, rescale = rescale(value))
 # plot heatmap of name by helpful
 ggplot(helpful.m, aes(variable, name)) + 
   geom_tile(aes(fill = rescale),colour = "white") + 
-  scale_fill_gradient(low = "white", high = "steelblue") +
+  scale_fill_gradient(low = "white", high = "firebrick4") +
   theme(legend.title=element_blank())
 ```
 
