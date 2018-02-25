@@ -130,10 +130,13 @@ helpful.m <- melt(helpful, id="name")
 helpful.m <- ddply(helpful.m, .(variable), transform, rescale = rescale(value))
 
 # plot heatmap of name by helpful
-ggplot(helpful.m, aes(variable, name)) + 
+ggplot(helpful.m, aes(name, variable)) + 
   geom_tile(aes(fill = rescale),colour = "white") + 
   scale_fill_gradient(low = "white", high = "firebrick4") +
-  theme(legend.title=element_blank())
+  theme(legend.title=element_blank(), 
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank(), 
+        axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
 ## Deep
