@@ -19,9 +19,9 @@ library(ggplot2)
 
 ```{r echo = FALSE, message = FALSE}
 # read in data from Excel
-respondent <- read.xls("LND_data_2.xlsx", sheet = 1, header = TRUE)
-connections <- read.xls("LND_data_2.xlsx", sheet = 2, header = TRUE)
-network <- read.xls("LND_data_2.xlsx", sheet = 3, header = TRUE, na.strings=c("NA",""))
+respondent <- read.xls("LND_data_Curtis.xlsx", sheet = 1, header = TRUE)
+connections <- read.xls("LND_data_Curtis.xlsx", sheet = 2, header = TRUE)
+network <- read.xls("LND_data_Curtis.xlsx", sheet = 3, header = TRUE, na.strings=c("NA",""))
 ```
 
 ```{r echo = FALSE, results = FALSE}
@@ -64,9 +64,6 @@ rownames(network) <- network$X7
 # drop name column
 network$X7 <- NULL
 
-# replace "X" with 1
-network[network == "X"] <- 1
-
 # set NA to 0
 network[is.na(network)] <- 0
 
@@ -82,10 +79,10 @@ In this section, we are going to show you what your core professional network lo
 
 ```{r echo=FALSE, fig.align="center"}
 # load network into graph
-g <- graph_from_adjacency_matrix(m)
+g <- graph_from_adjacency_matrix(m, weighted = TRUE, mode = "undirected")
 
-# convert the graph to undirected
-g <- as.undirected(g)
+# inspect the graph
+#g
 
 # calculate layout
 l <- layout_with_fr(g)
@@ -97,6 +94,7 @@ plot(g,
      vertex.label.color="black",
      vertex.label.cex=0.5,
      edge.curved=.1,
+     edge.width=E(g)$weight,
      layout=l
      )
 ```
