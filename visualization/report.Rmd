@@ -16,7 +16,6 @@ library(scales)
 library(ggplot2)
 ```
 
-
 ```{r echo = FALSE, message = FALSE}
 # read in data from Excel
 respondent <- read.xls("LND_data_Curtis.xlsx", sheet = 1, header = TRUE)
@@ -39,10 +38,7 @@ head(network)
 ```{r echo = FALSE}
 # change data types where needed
 respondent$name <- as.character(respondent$name)
-```
 
-
-```{r echo = FALSE}
 # change data types where needed
 connections$name <- as.character(connections$name)
 
@@ -101,7 +97,26 @@ plot(g,
 
 ## Open
 
+```{r echo = FALSE}
+# delete the ego from the network
+g_no_ego <- delete_vertices(g, respondent$name)
+
+# calculate density
+g_no_ego_density <- edge_density(g_no_ego)
+
+# calcualte openness from density
+openness <- 1 - g_no_ego_density
+
+# multiply openness by 100
+openness <- openness * 100
+
+# round to the nearest integer
+openness <- round(openness)
+```
+
 Openness measures the degree to which the people in your network know one another.
+
+Your openness score is `r openness`.
 
 <center>
 ![](./open.png)
