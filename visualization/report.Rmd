@@ -5,6 +5,8 @@ output:
     df_print: paged
   html_notebook: default
   pdf_document: default
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r echo=FALSE, message=FALSE}
@@ -44,10 +46,7 @@ connections$name <- as.character(connections$name)
 
 # filter connections to complete rows only
 connections <- connections[complete.cases(connections),]
-```
 
-
-```{r echo = FALSE}
 # convert network to char
 network[] <- lapply(network, as.character)
 
@@ -69,16 +68,12 @@ m <- as.matrix(network)
 
 Welcome to the results of the Leader Network Diagnostic. The purpose of this document is to help you understand your core professional network.
 
-## Network Visualization
+<center> <h2>Network Visualization</h2> </center>
+-----
 
-In this section, we are going to show you what your core professional network looks like.
-
-```{r echo=FALSE, fig.align="center"}
+```{r echo=FALSE, fig.align="center", fig.height=8, fig.width=12}
 # load network into graph
 g <- graph_from_adjacency_matrix(m, weighted = TRUE, mode = "undirected")
-
-# inspect the graph
-#g
 
 # calculate layout
 l <- layout_with_fr(g)
@@ -88,14 +83,33 @@ plot(g,
      vertex.size=25,
      vertex.color="gray",
      vertex.label.color="black",
-     vertex.label.cex=0.5,
+     vertex.label.cex=0.9,
      edge.curved=.1,
      edge.width=E(g)$weight,
      layout=l
      )
 ```
 
-## Open
+<center> <h2>Open</h2> </center>
+-----
+
+**Open networks provide access to varied and unique opportunities, but they do not necessarily guarantee success.**
+
+* Recognize and seize opportunities from your diverse contacts. Relationships are mutually beneficial. Identify the various factions/groups in your network and understand what they know, as well as what they need.
+* Identify and broker relationships that bring value to your separate groups.
+* Discover and disseminate valuable information to other parts of your network.
+
+**In a closed network, the interwoven relationships of your contacts can restrict the flow of external information and opportunities, leading to groupthink.**
+
+* There is a sense of trust and bonding inside your core network. Maintain and nurture important relationships, but it is important to expand your network as well as the networks of your team.
+* By focusing on the members of your core network, you may be increasingly cut off from the rest of your organization. Begin building relationships with people outside of your core network, but try not to use your current network to broker new introductions.
+* Most likely, the members of your core network have a shared experience. Expand your network further by meeting new people outside of this experience. For example attend professional groups, community events, university settings, alumni groups, etc. that share a similarity with your network but provide new and unique connections.
+
+**You have ample opportunities in your network to gain value, but maintaining strong enough ties across the wide variety of groups comes at a significant cost to your time and effort.**
+
+* You likely have an abundance of weak ties to hear new information, but you may not have strong enough ties to leverage this information. This situation does not benefit you or your network. It is time to begin organizing and focusing your network.
+* You can begin organizing your network by brokering a few relationships between separate groups. If successful, these connections will provide you with stronger ties, which will allow you to have better knowledge transfer and increased opportunities throughout your network for both you and the brokered relationships.
+* Streamline your network by letting go of unproductive relationships that take disproportionate time and effort to maintain. Let contacts go dormant, especially if you have previously built strong ties.
 
 ```{r echo = FALSE}
 # delete the ego from the network
@@ -114,17 +128,31 @@ openness <- openness * 100
 openness <- round(openness)
 ```
 
-Openness measures the degree to which the people in your network know one another.
-
-Your openness score is `r openness`.
+***Your openness score is `r openness`.***
 
 <center>
 ![](./open.png)
 </center>
 
-## Diverse
+<center> <h2>Diverse</h2> </center>
+-----
 
-Diversity measures the degree to which the people in your network are similiar or not similiar to one another.
+#### Diverse Network: Crossing 3 or More Boundaries
+
+**Like having an open network, you have opportunities to pass along information and resources between groups. However, you need to ask if the boundaries you are crossing help you achieve your goals.**
+
+* While boundary spanning may bring new information into a network, its benefits can still be hampered when the groups you connect to are similar to each other. Make sure the boundaries that you are crossing bring unique value into your network.
+* Leverage the differentiation and benefits from the different boundaries. Make sure your team is aware of the knowledge and relationships you have across these different groups. Do not hesitate to make an introduction if it provides value to
+both parties involved.
+* Evaluate the boundaries you span and determine if they help you achieve your goals. If they do not, identify the team, group, etc., where you would like to connect and begin the process of building relationships.
+
+#### Focused Network: Crossing 1 or 2 Boundaries
+
+**Your network is focused on only a few key areas, which could be your team, a committee, or a task force. While focusing on a few boundaries may be beneficial if you are working deeply on a specific task, chances are you may actually be overly focused and ignoring critical or strategic relationships.**
+
+* To stay relevant and fully resourced, evaluate whether you have the appropriate strategic relationships (those that provide insights into the future of you and your team’s work). If you don’t, identify which boundaries could provide additional value.
+* In order to access new information, you may need to branch out of the one or two groups where you spend all your time. Leverage your current strong and weak ties to identify and build relationships with a few individuals across the new boundary.
+* Free up some of your time to add a new boundary to your network. This may require that you delegate more of your current responsibilities to others in your network.
 
 ```{r echo=FALSE, results='hide', fig.align="center"}
 # subset helpful responses
@@ -154,9 +182,43 @@ ggplot(helpful.m, aes(name, variable)) +
         axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
-## Deep
+<center> <h2>Deep</h2> </center>
+-----
 
-Depth measures the strength of the relationship you have with the people in your network.
+#### Intimate: 70% of Your Relationships are Close or Very Close
 
+**If your network is very deep, most likely you are involved in long-lasting and very close relationships, but the time involved in maintaining this network may be restricting you from connecting with new, strategic relationships.**
 
+* It is likely that the size of your network is smaller because of the time and effort you spend interacting with these few very close ties. Try and expand your network by reducing the time spent with your current relationships and spending more non-work time interacting with new people.
+* Try becoming closer to a contact that is more distant. Your efforts with this more distant relationship will force you to spend a little less time with your current ties, but may have long term strategic benefits for everyone in your network.
 
+#### Balanced: Equal Number of Relationships Close and Not Close
+
+**A network that has a balanced depth has an equal mix of close/very close and not close/distant relationships. This is an ideal network because the mixture of old ties and new ties, strong and weak ties is more likely to bring you benefits from trust and knowledge transfer (strong ties), as well as novel and unique information (weak ties).**
+
+* Evaluate your network to ensure that your strong and weak ties are spread across your different boundaries. If not, identify and make new relationships with connections across strategic boundaries.
+* A balanced overall network may not necessarily mean that you have balanced ties within each boundary. You should have at least one close or very close tie across each of your boundaries to gain the biggest benefit. Ensure your strong ties are not all invested in one group.
+
+#### Distant: 70% Number of Relationships are Distant or Very Distant
+
+**If the majority of your relationships are distant, then your network is likely being under utilized. If you do not know your contacts well then you may not know their value or the benefits they could bring to your network.**
+
+* Strong relationships provide tacit knowledge transfer as well as favor sharing. If your network is mostly distant, then you are probably missing out on opportunities for you and others in your network. Reach out to at least half your ties and begin the process of strengthening these relationships.
+* To form stronger relationships, take the time to get to know some of your contacts. Ask questions and be curious about the other person’s job and interests. Self-disclose about yourself a little bit at a time. Remember, if you go too deep too quickly you will likely push them further away.
+* Reach out to these more distant ties more frequently, and respond quickly when they contact you. The quickest way to build a stronger relationship is to go out of your way for someone. Do something that may inconvenience you, but bring value to someone in your network.
+
+```{r echo=FALSE, results='hide', fig.align="center"}
+# bin relationships into close or very close and distant or very distant
+connections$closeness_bin <- ifelse(connections$closeness %in% c("Very Close", "Close"), "close or very close", "distant or very distant")
+
+# calculate frequency of distance
+close_prop <- prop.table(table(connections$closeness_bin))
+
+# transform the table
+close_prop <- transform(close_prop)
+
+# pick the larger of the proportion
+close <- close_prop[close_prop$Freq == max(close_prop$Freq),]
+```
+
+***`r round(close[[2]] * 100)`% of the relationships in your network are `r close[[1]]`***
