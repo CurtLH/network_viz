@@ -1,5 +1,4 @@
 ---
-title: "Leader Network Diagnostic Report"
 output:
   html_document:
     df_print: paged
@@ -9,6 +8,10 @@ editor_options:
   chunk_output_type: console
 ---
 
+<center>
+![](./LND_logo.png)
+</center>
+
 ```{r echo=FALSE, message=FALSE}
 library(gdata)
 library(igraph)
@@ -16,13 +19,15 @@ library(reshape)
 library(plyr)
 library(scales)
 library(ggplot2)
+library(dplyr)
+library(RColorBrewer)
 ```
 
 ```{r echo = FALSE, message = FALSE}
 # read in data from Excel
 respondent <- read.xls("LND_data_Curtis.xlsx", sheet = 1, header = TRUE)
-connections <- read.xls("LND_data_Curtis.xlsx", sheet = 2, header = TRUE)
-network <- read.xls("LND_data_Curtis.xlsx", sheet = 3, header = TRUE, na.strings=c("NA",""))
+connections <- read.xls("./LND_data_Curtis.xlsx", sheet = 2, header = TRUE)
+network <- read.xls("./LND_data_Curtis.xlsx", sheet = 3, header = TRUE, na.strings=c("NA",""))
 ```
 
 ```{r echo = FALSE, results = FALSE}
@@ -37,15 +42,58 @@ head(connections)
 head(network)
 ```
 
-```{r echo = FALSE}
+```{r echo = FALSE, message = FALSE, results = FALSE, warning = FALSE}
 # change data types where needed
 respondent$name <- as.character(respondent$name)
+respondent$age <- factor(respondent$age, order = TRUE)
+respondent$leader_level <- factor(respondent$leader_level, 
+                                  order = TRUE, 
+                                  levels = c("Individual Contributor / Professional", 
+                                             "First Level", 
+                                             "Mid Level", 
+                                             "Senior Level"))
+
 
 # change data types where needed
 connections$name <- as.character(connections$name)
+connections$age <- factor(connections$age, order = TRUE)
+connections$leader_level <- factor(connections$leader_level, 
+                                   order = TRUE, 
+                                   levels = c("Individual Contributor / Professional", 
+                                              "First Level", 
+                                              "Mid Level", 
+                                              "Senior Level"))
+connections$formal_rank <- factor(connections$formal_rank, 
+                                  order = TRUE, 
+                                  levels = c("Self-employed or not currently working", 
+                                             "Below yours", 
+                                             "Similar to yours", 
+                                             "Above yours"))
+connections$closeness <- factor(connections$closeness, 
+                                  order = TRUE, 
+                                  levels = c("Distant", 
+                                             "Not Close", 
+                                             "Close", 
+                                             "Very Close"))
 
 # filter connections to complete rows only
 connections <- connections[complete.cases(connections),]
+
+# create a DF for vertex attributes
+attr <- bind_rows(respondent, connections)
+
+str(attr)
+
+# adjust attr data types where needed
+attr$leader_level <- factor(attr$leader_level, 
+                            order = TRUE, 
+                            levels = c("Individual Contributor / Professional", 
+                                       "First Level", 
+                                       "Mid Level", 
+                                       "Senior Level"))
+attr$age <- factor(attr$age, order = TRUE)
+attr$gender <- as.factor(attr$gender)
+attr$race <- as.factor(attr$race)
 
 # convert network to char
 network[] <- lapply(network, as.character)
@@ -71,23 +119,53 @@ Welcome to the results of the Leader Network Diagnostic. The purpose of this doc
 <center> <h2>Network Visualization</h2> </center>
 -----
 
-```{r echo=FALSE, fig.align="center", fig.height=8, fig.width=12}
+```{r echo=FALSE, fig.align="center", fig.height=6, fig.width=12}
 # load network into graph
 g <- graph_from_adjacency_matrix(m, weighted = TRUE, mode = "undirected")
 
 # calculate layout
 l <- layout_with_fr(g)
 
+# add vertex attributes
+g <- set_vertex_attr(g, "leader_level", index = V(g), attr$leader_level)
+g <- set_vertex_attr(g, "gender", index = V(g), attr$gender)
+g <- set_vertex_attr(g, "age", index = V(g), attr$age)
+g <- set_vertex_attr(g, "race", index = V(g), attr$race)
+g <- set_vertex_attr(g, "where_work", index = V(g), attr$where_work)
+g <- set_vertex_attr(g, "same_company", index = V(g), attr$same_company)
+g <- set_vertex_attr(g, "formal_rank", index = V(g), attr$formal_rank)
+g <- set_vertex_attr(g, "position", index = V(g), attr$position)
+g <- set_vertex_attr(g, "closeness", index = V(g), attr$closeness)
+
+# define var to color by
+var <- "leader_level"
+dfcol <- "$"(attr, "leader_level")
+
+# define to color pallet for the vertex attribute
+pal <- brewer.pal(length(unique(vertex_attr(g, var))), "Dark2")
+
 # plot graph
 plot(g, 
-     vertex.size=25,
-     vertex.color="gray",
+     vertex.size=30,
+     vertex.color=pal[as.numeric(as.factor(vertex_attr(g, var)))],
      vertex.label.color="black",
-     vertex.label.cex=0.9,
+     vertex.label.cex=0.8,
+     vertex.label.font=1,
      edge.curved=.1,
      edge.width=E(g)$weight,
      layout=l
      )
+
+legend(x=2, 
+       y=0, 
+       unique(dfcol), 
+       pch=21,
+       pt.bg=pal, 
+       pt.cex=2, 
+       cex=.8, 
+       text.font=1,
+       bty="n", 
+       ncol=1)
 ```
 
 <center> <h2>Open</h2> </center>
