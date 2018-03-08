@@ -1,0 +1,56 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(philentropy)
+```
+
+
+```{r}
+# create example data
+name  <- c("curtis", "bob", "jimmy", "april", "david")
+hobby <- c("same", "same", "different", "same", "same")
+tools <- c("same", "different", "same", "different", "same")
+space <- c("same", "more", "less", "more", "same")
+skill <- c("same", "higher", "lower", "lower", "same")
+
+# make a dataframe
+df <- data.frame(name, hobby, tools, space, skill)
+
+# convert factors to numeric
+df$hobby <- as.numeric(df$hobby)
+df$tools <- as.numeric(df$tools)
+df$space <- as.numeric(df$space)
+df$skill <- as.numeric(df$skill)
+```
+
+```{r}
+# convert the dataframe to a matrix
+m <- data.matrix(df[2:ncol(df)])
+row.names(m) <- df$name
+```
+
+```{r}
+# https://cran.r-project.org/web/packages/philentropy/vignettes/Distances.html
+
+# calculate jaccard distance
+d <- distance(m, method = "jaccard",)
+
+# subtract jaccard from 1
+d <- 1 - d
+
+# set row/column names
+row.names(d) <- df$name
+colnames(d) <- df$name
+
+# extract the upper half of the matrix
+d[lower.tri(d)] <- 0
+
+# calculate similarity scores compared to curtis
+sim <- d["curtis",][2:length(name)]
+
+# calculate the average similairty
+mean(sim)
+```

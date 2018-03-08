@@ -138,8 +138,8 @@ g <- set_vertex_attr(g, "position", index = V(g), attr$position)
 g <- set_vertex_attr(g, "closeness", index = V(g), attr$closeness)
 
 # define var to color by
-var <- "leader_level"
-dfcol <- "$"(attr, "leader_level")
+var <- "age"
+dfcol <- "$"(attr, "age")
 
 # define to color pallet for the vertex attribute
 pal <- brewer.pal(length(unique(vertex_attr(g, var))), "Dark2")
@@ -150,7 +150,6 @@ plot(g,
      vertex.color=pal[as.numeric(as.factor(vertex_attr(g, var)))],
      vertex.label.color="black",
      vertex.label.cex=0.8,
-     vertex.label.font=1,
      edge.curved=.1,
      edge.width=E(g)$weight,
      layout=l
@@ -158,12 +157,11 @@ plot(g,
 
 legend(x=2, 
        y=0, 
-       unique(dfcol), 
+       intersect(levels(dfcol), unique(dfcol)),
        pch=21,
        pt.bg=pal, 
        pt.cex=2, 
        cex=.8, 
-       text.font=1,
        bty="n", 
        ncol=1)
 ```
