@@ -26,9 +26,11 @@ library(philentropy)
 
 ```{r echo = FALSE, message = FALSE}
 # read in data from Excel
-respondent <- read.xls("LND_data_Curtis.xlsx", sheet = 1, header = TRUE)
-connections <- read.xls("./LND_data_Curtis.xlsx", sheet = 2, header = TRUE)
-network <- read.xls("./LND_data_Curtis.xlsx", sheet = 3, header = TRUE, na.strings=c("NA",""))
+filename <- "LND_data_Curtis.xlsx"
+respondent <- read.xls(filename, sheet = 1, header = TRUE)
+connections <- read.xls(filename, sheet = 2, header = TRUE)
+#connections[16,1] <- 16
+network <- read.xls(filename, sheet = 3, header = TRUE, na.strings=c("NA",""))
 ```
 
 ```{r echo = FALSE, results = FALSE}
@@ -97,13 +99,16 @@ attr$race <- as.factor(attr$race)
 network[] <- lapply(network, as.character)
 
 # subset network to only rows/connections
-network <-network[c(1:12), c(1:13)]
+network <-network[c(1:nrow(connections)), c(1:nrow(connections) + 1)]
+
+# find blank col
+blank_col <- names(network)[1]
 
 # set first column as rownames
-rownames(network) <- network$X7
+rownames(network) <- network$blank_col
 
 # drop name column
-network$X7 <- NULL
+network$blank_col <- NULL
 
 # set NA to 0
 network[is.na(network)] <- 0
@@ -117,7 +122,7 @@ Welcome to the results of the Leader Network Diagnostic. The purpose of this doc
 <center> <h2>Network Visualization</h2> </center>
 -----
 
-```{r echo=FALSE, fig.align="center", fig.height=6, fig.width=12}
+```{r echo=FALSE, fig.align="center", fig.height=6, fig.width=12, message = FALSE, warning = FALSE}
 # load network into graph
 g <- graph_from_adjacency_matrix(m, weighted = TRUE, mode = "undirected")
 
