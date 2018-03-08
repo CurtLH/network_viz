@@ -270,7 +270,7 @@ sim <- d[respondent$name,][2:length(boundaries$name)]
 avg_sim <- mean(sim)
 ```
 
-***Your openness score is `r percent(avg_sim)` diverse.***
+***Your network is `r percent(avg_sim)` diverse.***
 
 `If we are going to use Jaccard Coef for calculating diversity, we need to adjust the definitions to match.`
 
