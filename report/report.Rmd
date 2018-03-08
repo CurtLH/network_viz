@@ -21,6 +21,7 @@ library(scales)
 library(ggplot2)
 library(dplyr)
 library(RColorBrewer)
+library(philentropy)
 ```
 
 ```{r echo = FALSE, message = FALSE}
@@ -75,14 +76,11 @@ connections$closeness <- factor(connections$closeness,
                                              "Not Close", 
                                              "Close", 
                                              "Very Close"))
-
 # filter connections to complete rows only
 connections <- connections[complete.cases(connections),]
 
 # create a DF for vertex attributes
 attr <- bind_rows(respondent, connections)
-
-str(attr)
 
 # adjust attr data types where needed
 attr$leader_level <- factor(attr$leader_level, 
@@ -220,13 +218,56 @@ openness <- round(openness)
 -----
 
 ```{r echo = FALSE}
-# calculate diversity
+# subset node attributes to only columns of interest
+boundaries <- attr[c("name", 
+                     "leader_level", 
+                     "gender", 
+                     "age", 
+                     "race", 
+                     "where_work", 
+                     "same_company", 
+                     "formal_rank", 
+                     "position")]
 
+# fill in missing data about the ego
+boundaries[1, "where_work"] <- "At your same location"
+boundaries[1, "same_company"] <- "Yes"
+boundaries[1, "formal_rank"] <- "Similar to yours"
+boundaries[1, "position"] <- "Same team or group in your company"
+
+# convert factors to numeric
+indx <- sapply(boundaries, is.factor)
+boundaries[indx] <- lapply(boundaries[indx], function(x) as.numeric(x))
+
+# convert the dataframe to a matrix
+m <- data.matrix(boundaries[2:ncol(boundaries)])
+row.names(m) <- boundaries$name
+
+# https://cran.r-project.org/web/packages/philentropy/vignettes/Distances.html
+
+# calculate jaccard distance
+d <- distance(m, method = "jaccard",)
+
+# subtract jaccard from 1
+d <- 1 - d
+
+# set row/column names
+row.names(d) <- boundaries$name
+colnames(d) <- boundaries$name
+
+# extract the upper half of the matrix
+d[lower.tri(d)] <- 0
+
+# calculate similarity scores compared to curtis
+sim <- d[respondent$name,][2:length(boundaries$name)]
+
+# calculate the average similairty
+avg_sim <- mean(sim)
 ```
 
-***Your network is `<insert diversity here>`.***
+***Your openness score is `r percent(avg_sim)` diverse.***
 
-`Until the appropriate diversity metric is selected, I am displaying both interpretation.`
+`If we are going to use Jaccard Coef for calculating diversity, we need to adjust the definitions to match.`
 
 ```{asis, echo = TRUE}
 **A diverse network means you cross 3 or more boundaries.**
