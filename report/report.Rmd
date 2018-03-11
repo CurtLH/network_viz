@@ -245,13 +245,13 @@ indx <- sapply(boundaries, is.factor)
 boundaries[indx] <- lapply(boundaries[indx], function(x) as.numeric(x))
 
 # convert the dataframe to a matrix
-m <- data.matrix(boundaries[2:ncol(boundaries)])
-row.names(m) <- boundaries$name
+bm <- data.matrix(boundaries[2:ncol(boundaries)])
+row.names(bm) <- boundaries$name
 
 # https://cran.r-project.org/web/packages/philentropy/vignettes/Distances.html
 
 # calculate jaccard distance
-d <- distance(m, method = "jaccard",)
+d <- distance(bm, method = "jaccard",)
 
 # subtract jaccard from 1
 d <- 1 - d
