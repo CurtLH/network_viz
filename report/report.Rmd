@@ -29,7 +29,6 @@ library(philentropy)
 filename <- "LND_data_Curtis.xlsx"
 respondent <- read.xls(filename, sheet = 1, header = TRUE)
 connections <- read.xls(filename, sheet = 2, header = TRUE)
-#connections[16,1] <- 16
 network <- read.xls(filename, sheet = 3, header = TRUE, na.strings=c("NA",""))
 ```
 
@@ -78,22 +77,23 @@ connections$closeness <- factor(connections$closeness,
                                              "Not Close", 
                                              "Close", 
                                              "Very Close"))
+
 # filter connections to complete rows only
 connections <- connections[complete.cases(connections),]
 
-# create a DF for vertex attributes
-attr <- bind_rows(respondent, connections)
+# create a DF for vertex everyoneibutes
+everyone <- bind_rows(respondent, connections)
 
-# adjust attr data types where needed
-attr$leader_level <- factor(attr$leader_level, 
+# adjust everyone data types where needed
+everyone$leader_level <- factor(everyone$leader_level, 
                             order = TRUE, 
                             levels = c("Individual Contributor / Professional", 
                                        "First Level", 
                                        "Mid Level", 
                                        "Senior Level"))
-attr$age <- factor(attr$age, order = TRUE)
-attr$gender <- as.factor(attr$gender)
-attr$race <- as.factor(attr$race)
+everyone$age <- factor(everyone$age, order = TRUE)
+everyone$gender <- as.factor(everyone$gender)
+everyone$race <- as.factor(everyone$race)
 
 # convert network to char
 network[] <- lapply(network, as.character)
@@ -101,20 +101,20 @@ network[] <- lapply(network, as.character)
 # subset network to only rows/connections
 network <-network[c(1:nrow(connections)), c(1:nrow(connections) + 1)]
 
-# find blank col
-blank_col <- names(network)[1]
+# find respondent name
+respondent.name <- names(network)[1]
 
 # set first column as rownames
-rownames(network) <- network$blank_col
+rownames(network) <- network$respondent.name
 
 # drop name column
-network$blank_col <- NULL
+network$respondent.name <- NULL
 
 # set NA to 0
 network[is.na(network)] <- 0
 
 # transform network into matrix
-m <- as.matrix(network)
+network.m <- as.matrix(network)
 ```
 
 Welcome to the results of the Leader Network Diagnostic. The purpose of this document is to help you understand your core professional network.
@@ -124,27 +124,29 @@ Welcome to the results of the Leader Network Diagnostic. The purpose of this doc
 
 ```{r echo=FALSE, fig.align="center", fig.height=6, fig.width=12, message = FALSE, warning = FALSE}
 # load network into graph
-g <- graph_from_adjacency_matrix(m, weighted = TRUE, mode = "undirected")
+g <- graph_from_adjacency_matrix(network.m, 
+                                 weighted = TRUE, 
+                                 mode = "undirected")
 
 # calculate layout
-l <- layout_with_fr(g)
+g.layout <- layout_with_fr(g)
 
-# add vertex attributes
-g <- set_vertex_attr(g, "leader_level", index = V(g), attr$leader_level)
-g <- set_vertex_attr(g, "gender", index = V(g), attr$gender)
-g <- set_vertex_attr(g, "age", index = V(g), attr$age)
-g <- set_vertex_attr(g, "race", index = V(g), attr$race)
-g <- set_vertex_attr(g, "where_work", index = V(g), attr$where_work)
-g <- set_vertex_attr(g, "same_company", index = V(g), attr$same_company)
-g <- set_vertex_attr(g, "formal_rank", index = V(g), attr$formal_rank)
-g <- set_vertex_attr(g, "position", index = V(g), attr$position)
-g <- set_vertex_attr(g, "closeness", index = V(g), attr$closeness)
+# add vertex everyoneibutes
+g <- set_vertex_attr(g, "leader_level", index = V(g), everyone$leader_level)
+g <- set_vertex_attr(g, "gender", index = V(g), everyone$gender)
+g <- set_vertex_attr(g, "age", index = V(g), everyone$age)
+g <- set_vertex_attr(g, "race", index = V(g), everyone$race)
+g <- set_vertex_attr(g, "where_work", index = V(g), everyone$where_work)
+g <- set_vertex_attr(g, "same_company", index = V(g), everyone$same_company)
+g <- set_vertex_attr(g, "formal_rank", index = V(g), everyone$formal_rank)
+g <- set_vertex_attr(g, "position", index = V(g), everyone$position)
+g <- set_vertex_attr(g, "closeness", index = V(g), everyone$closeness)
 
 # define var to color by
-var <- "age"
-dfcol <- "$"(attr, "age")
+var <- "leader_level"
+everyone.color <- everyone$leader_level
 
-# define to color pallet for the vertex attribute
+# define to color pallet for the vertex everyoneibute
 pal <- brewer.pal(length(unique(vertex_attr(g, var))), "Dark2")
 
 # plot graph
@@ -155,12 +157,12 @@ plot(g,
      vertex.label.cex=0.8,
      edge.curved=.1,
      edge.width=E(g)$weight,
-     layout=l
+     layout=g.layout
      )
 
 legend(x=2, 
        y=0, 
-       intersect(levels(dfcol), unique(dfcol)),
+       intersect(levels(everyone.color), unique(everyone.color)),
        pch=21,
        pt.bg=pal, 
        pt.cex=2, 
@@ -174,19 +176,13 @@ legend(x=2,
 
 ```{r echo = FALSE}
 # delete the ego from the network
-g_no_ego <- delete_vertices(g, respondent$name)
+g.ego_removed <- delete_vertices(g, respondent$name)
 
 # calculate density
-g_no_ego_density <- edge_density(g_no_ego)
+g.ego_removed.density <- edge_density(g.ego_removed)
 
 # calcualte openness from density
-openness <- 1 - g_no_ego_density
-
-# multiply openness by 100
-openness <- openness * 100
-
-# round to the nearest integer
-openness <- round(openness)
+openness <- round(1 - g.ego_removed.density) * 100
 ```
 
 ***Your openness score is `r openness`.***
@@ -223,54 +219,54 @@ openness <- round(openness)
 -----
 
 ```{r echo = FALSE}
-# subset node attributes to only columns of interest
-boundaries <- attr[c("name", 
-                     "leader_level", 
-                     "gender", 
-                     "age", 
-                     "race", 
-                     "where_work", 
-                     "same_company", 
-                     "formal_rank", 
-                     "position")]
+# subset node everyoneibutes to only columns of interest
+everyone.boundaries <- everyone[c("name", 
+                                  "leader_level", 
+                                  "gender", 
+                                  "age", 
+                                  "race", 
+                                  "where_work", 
+                                  "same_company", 
+                                  "formal_rank", 
+                                  "position")]
 
 # fill in missing data about the ego
-boundaries[1, "where_work"] <- "At your same location"
-boundaries[1, "same_company"] <- "Yes"
-boundaries[1, "formal_rank"] <- "Similar to yours"
-boundaries[1, "position"] <- "Same team or group in your company"
+everyone.boundaries[1, "where_work"] <- "At your same location"
+everyone.boundaries[1, "same_company"] <- "Yes"
+everyone.boundaries[1, "formal_rank"] <- "Similar to yours"
+everyone.boundaries[1, "position"] <- "Same team or group in your company"
 
 # convert factors to numeric
-indx <- sapply(boundaries, is.factor)
-boundaries[indx] <- lapply(boundaries[indx], function(x) as.numeric(x))
+indx <- sapply(everyone.boundaries, is.factor)
+everyone.boundaries[indx] <- lapply(everyone.boundaries[indx], function(x) as.numeric(x))
 
 # convert the dataframe to a matrix
-bm <- data.matrix(boundaries[2:ncol(boundaries)])
-row.names(bm) <- boundaries$name
+everyone.boundaries.m <- data.matrix(everyone.boundaries[2:ncol(everyone.boundaries)])
+row.names(everyone.boundaries.m) <- everyone.boundaries$name
 
-# https://cran.r-project.org/web/packages/philentropy/vignettes/Distances.html
+# thanks to https://cran.r-project.org/web/packages/philentropy/vignettes/Distances.html
 
 # calculate jaccard distance
-d <- distance(bm, method = "jaccard",)
+everyone.boundaries.distance <- distance(everyone.boundaries.m, method = "jaccard",)
 
 # subtract jaccard from 1
-d <- 1 - d
+everyone.boundaries.distance <- 1 - everyone.boundaries.distance
 
 # set row/column names
-row.names(d) <- boundaries$name
-colnames(d) <- boundaries$name
+row.names(everyone.boundaries.distance) <- everyone.boundaries$name
+colnames(everyone.boundaries.distance) <- everyone.boundaries$name
 
 # extract the upper half of the matrix
-d[lower.tri(d)] <- 0
+everyone.boundaries.distance[lower.tri(everyone.boundaries.distance)] <- 0
 
 # calculate similarity scores compared to curtis
-sim <- d[respondent$name,][2:length(boundaries$name)]
+everyone.boundaries.similarity <- everyone.boundaries.distance[respondent$name,][2:length(everyone.boundaries$name)]
 
 # calculate the average similairty
-avg_sim <- mean(sim)
+similarity <- mean(everyone.boundaries.similarity)
 ```
 
-***Your network is `r percent(avg_sim)` diverse.***
+***Your network is `r percent(similarity)` diverse.***
 
 `If we are going to use Jaccard Coef for calculating diversity, we need to adjust the definitions to match.`
 
@@ -300,24 +296,25 @@ Your network is focused on only a few key areas, which could be your team, a com
 
 ```{r echo=FALSE, results='hide', fig.align="center"}
 # bin relationships into close or very close and distant or very distant
-connections$closeness_bin <- ifelse(connections$closeness %in% c("Very Close", "Close"), "close or very close", "distant or very distant")
+connections$closeness_bin <- ifelse(connections$closeness %in% c("Very Close", "Close"), 
+                                    "close or very close", "distant or very distant")
 
 # calculate frequency of distance
-close_prop <- prop.table(table(connections$closeness_bin))
+connections.proportion <- prop.table(table(connections$closeness_bin))
 
 # transform the table
-close_prop <- transform(close_prop)
+connections.proportion <- transform(connections.proportion)
 
 # extract the percent of relationships that are close or very close
-close_perc <- close_prop[[2]][1]
+connections.percent <- connections.proportion[[2]][1]
 
 # pick the larger of the proportion
-close <- close_prop[close_prop$Freq == max(close_prop$Freq),]
+close <- connections.proportion[connections.proportion$Freq == max(connections.proportion$Freq),]
 ```
 
 ***`r round(close[[2]] * 100)`% of the relationships in your network are `r close[[1]]`***
 
-```{asis, echo = close_perc >= 0.7}
+```{asis, echo = close[[2]] >= 0.7}
 **In an intimate network, more than 70% of your relationships are close or very close.**
 
 If your network is very deep, most likely you are involved in long-lasting and very close relationships, but the time involved in maintaining this network may be restricting you from connecting with new, strategic relationships.
@@ -326,7 +323,7 @@ If your network is very deep, most likely you are involved in long-lasting and v
 * Try becoming closer to a contact that is more distant. Your efforts with this more distant relationship will force you to spend a little less time with your current ties, but may have long term strategic benefits for everyone in your network.
 ```
 
-```{asis, echo = (close_perc > 0.3 & close_perc < 0.7)}
+```{asis, echo = (close[[2]] > 0.3 & close[[2]] < 0.7)}
 **In a balanced network, there are an equal number of relationships close and not close**
 
 A network that has a balanced depth has an equal mix of close/very close and not close/distant relationships. This is an ideal network because the mixture of old ties and new ties, strong and weak ties is more likely to bring you benefits from trust and knowledge transfer (strong ties), as well as novel and unique information (weak ties).
@@ -335,7 +332,7 @@ A network that has a balanced depth has an equal mix of close/very close and not
 * A balanced overall network may not necessarily mean that you have balanced ties within each boundary. You should have at least one close or very close tie across each of your boundaries to gain the biggest benefit. Ensure your strong ties are not all invested in one group.
 ```
 
-```{asis, echo = close_perc <= 0.3}
+```{asis, echo = close[[2]] <= 0.3}
 **In a distant network, more than 70% of your relationships are distant or very distant**
 
 If the majority of your relationships are distant, then your network is likely being under utilized. If you do not know your contacts well then you may not know their value or the benefits they could bring to your network.
@@ -352,24 +349,24 @@ If the majority of your relationships are distant, then your network is likely b
 
 ```{r echo=FALSE, results='hide', fig.align="center"}
 # subset helpful responses
-helpful <- connections[c("name", 
-                         "work", 
-                         "friend", 
-                         "support", 
-                         "career",
-                         "mentoring",
-                         "growth",
-                         "motivator"
-                         )]
+connections.helpful <- connections[c("name", 
+                                     "work", 
+                                     "friend", 
+                                     "support", 
+                                     "career",
+                                     "mentoring",
+                                     "growth",
+                                     "motivator"
+                                     )]
 
 #reshape the helpful data
-helpful.m <- melt(helpful, id="name")
+connections.helpful.m <- melt(connections.helpful, id="name")
 
 # rescale variables
-helpful.m <- ddply(helpful.m, .(variable), transform, rescale = rescale(value))
+connections.helpful.m <- ddply(connections.helpful.m, .(variable), transform, rescale = rescale(value))
 
 # plot heatmap of name by helpful
-ggplot(helpful.m, aes(name, variable)) + 
+ggplot(connections.helpful.m, aes(name, variable)) + 
   geom_tile(aes(fill = rescale),colour = "white") + 
   scale_fill_gradient(low = "white", high = "firebrick4") +
   theme(legend.title=element_blank(), 
